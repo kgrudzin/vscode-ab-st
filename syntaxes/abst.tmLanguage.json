@@ -1,104 +1,291 @@
 {
-    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-    "name": "AB ST",
-    "patterns": [
-        {
-            "include": "#comments"
-        },
-        {
-            "include": "#section"
-        },
-        {
-            "include": "#strings"
-        },
-        {
-            "include": "#keywords"
-        },
-        {
-            "include": "#operators"
-        },
-        {
-            "include": "#constants"
-        }
-    ],
-    "repository": {
-        "comments":{
-            "patterns": [
-                {
-                    "name": "comment.block.paren.abst",
-                    "begin": "\\(\\*",
-                    "end": "\\*\\)",
-                    "captures": {
-                        "0": { "name": "punctuation.definition.comment.abst" }
-                    }
-                },
-                {
-                    "name": "comment.block.slash.abst",
-                    "begin": "\\/\\*",
-                    "end": "\\*\\/",
-                    "captures": {
-                        "0": { "name": "punctuation.definition.comment.abst" }
-                    }
-                },
-                {
-                    "name": "comment.line.double-slash-abst",
-                    "match": "(//).*$\\n?",
-                    "captures": {
-                        "1": { "name": "punctuation.definition.comment.abst"}
-                    }
-                }
-            ]
-        },
-        "section":{
-			"patterns":[
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "AB ST",
+	"patterns": [
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#block"
+		},
+		{
+			"include": "#code"
+		}
+	],
+	"repository": {
+		"comments": {
+			"patterns": [
+				{
+					"name": "comment.block.paren.abst",
+					"begin": "\\(\\*",
+					"end": "\\*\\)",
+					"captures": {
+						"0": {
+							"name": "punctuation.definition.comment.abst"
+						}
+					}
+				},
+				{
+					"name": "comment.block.slash.abst",
+					"begin": "\\/\\*",
+					"end": "\\*\\/",
+					"captures": {
+						"0": {
+							"name": "punctuation.definition.comment.abst"
+						}
+					}
+				},
+				{
+					"name": "comment.line.double-slash-abst",
+					"match": "(//).*$\\n?",
+					"captures": {
+						"1": {
+							"name": "punctuation.definition.comment.abst"
+						}
+					}
+				}
+			]
+		},
+		"block": {
+			"patterns": [
+				{
+					"name": "entity.name.codeblock.abst",
+					"begin": "(?i)(FUNCTION|FUNCTION_BLOCK|ORGANIZATION_BLOCK)",
+					"end": "(?i)BEGIN",
+					"captures": {
+						"0": {
+							"name": "support.function.abst"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#declaration_section"
+						},
+						{
+							"include": "#block-attributes"
+						}
+					]
+				},
+				{
+					"name": "entity.name.typeblock.abst",
+					"begin": "(?i)(TYPE)",
+					"end": "(?i)END_TYPE",
+					"captures": {
+						"0": {
+							"name": "support.function.abst"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#declaration_section"
+						},
+						{
+							"include": "#block-attributes"
+						}
+					]
+				}
+			]
+		},
+		"block-attributes": {
+			"patterns": [
+				{
+					"comment": "Key value with equal, ex: TITLE = <value>",
+					"name": "entity.name.block-attribute.equals.abst",
+					"match": "(\\w*)\\s*(=)(.*\\n?)",
+					"captures": {
+						"1": {
+							"name": "keyword.control.header.abst"
+						},
+						"2": {
+							"name": "keyword.operator.abst"
+						},
+						"3": {
+							"name": "string.unquoted.abst"
+						}
+					}
+				},
+				{
+					"comment": "Key value with colon, ex: AUTHOR : <value>",
+					"name": "entity.name.block-attribute.colon.abst",
+					"match": "(\\w*)\\s*(:)(.*\\n?)",
+					"captures": {
+						"1": {
+							"name": "keyword.control.header.abst"
+						},
+						"2": {
+							"name": "keyword.operator.abst"
+						},
+						"3": {
+							"name": "string.unquoted.abst"
+						}
+					}
+				},
+				{
+					"comment": "Key with no value, ex: KNOW_HOW_PROTECT",
+					"name": "entity.name.block-attribute.single.abst",
+					"match": "(^\\w+$\\n?)",
+					"captures": {
+						"1": {
+							"name": "keyword.control.header.abst"
+						}
+					}
+				}
+			]
+		},
+		"declaration_section": {
+			"patterns": [
+				{
+					"name": "entity.name.declaration-section.var.abst",
+					"begin": "(?i)\\b(VAR_INPUT|VAR_IN_OUT|VAR_OUTPUT|VAR_TEMP|VAR_GLOBAL|VAR\\s*CONSTANT|VAR)\\b",
+					"end": "(?i)END_VAR",
+					"captures": {
+						"0": {
+							"name": "support.class.abst"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#declaration"
+						}
+					]
+				},
+				{
+					"name": "entity.name.declaration-section.struct.abst",
+					"begin": "(?i)\\b(STRUCT)\\b",
+					"end": "(?i)\\bEND_STRUCT\\b",
+					"captures": {
+						"0": {
+							"name": "support.class.abst"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#declaration"
+						}
+					]
+				}
+			]
+		},
+		"declaration": {
+			"patterns": [
+				{
+					"name": "entity.declaration.member.abst",
+					"match": "(?i)(\\w+)\\s*({(.*?)})?(\\s*:\\s*)(.*)",
+					"captures": {
+						"1": {
+							"name": "meta.definition.variable.name.abst"
+						},
+						"2": {
+							"name": "meta.object-literal.key.systemattibutes.abst",
+							"patterns": [
+								{
+									"name" : "sdf",
+									"match": "(?<attributeName>\\w+)[\\s]*:=[\\s]*(?<attributeValue>'.*?')",
+									"captures": {
+										"1": {
+											"name": "meta.definition.variable.name.systemattribute.abst"
+										},
+										"2":{
+											"name": "string.quoted.single.systemattribute.abst"
+										}
+									}
+								}
+							]
+						},
+						"4": {
+							"name": "keyword.operator"
+						},
+						"5": {
+							"name": "keyword.control",
+							"patterns": [
+								{
+									"include": "#strings"
+								},
+								{
+									"include": "#comments"
+								},
+								{
+									"include": "#operators"
+								},
+								{
+									"include": "#constants"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"section": {
+			"patterns": [
 				{
 					"captures": {
-						"1": { "name": "keyword.other.region.abst"},
-						"2": { "name": "string.unquoted.abst"}
+						"1": {
+							"name": "keyword.other.region.abst"
+						},
+						"2": {
+							"name": "string.unquoted.abst"
+						}
 					},
 					"match": "(?i)(#region)\\b(.*)$\\n?"
 				},
 				{
 					"captures": {
-						"1": { "name": "keyword.other.endregion.abst"},
-						"2": { "name": "string.unquoted.abst"}
+						"1": {
+							"name": "keyword.other.endregion.abst"
+						},
+						"2": {
+							"name": "string.unquoted.abst"
+						}
 					},
 					"match": "(?i)(#endregion)\\b(.*)$\\n?"
 				}
 			]
 		},
-        "constants":{
+		"constants": {
 			"patterns": [
 				{
-					"match": "\\b(T|TIME)#(((([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)|\\d+)?d)?((([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)|\\d+)?h)?((([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)|\\d+)?m)?((([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)|\\d+)?s)?((([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)|\\d+)?ms)?)\\b",	
-					"name": "constant.numeric.scl"					
+					"match": "\\b(T|TIME)#(((([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)|\\d+)?d)?((([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)|\\d+)?h)?((([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)|\\d+)?m)?((([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)|\\d+)?s)?((([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)|\\d+)?ms)?)\\b",
+					"name": "constant.numeric.scl"
 				},
 				{
-					"match": "\\b(16)#[0-9A-F]([0-9A-F]|\\_)+\\b",
-					"name": "constant.numeric.scl"					
+					"match": "(?i)\\b(16)#[0-9A-F]([0-9A-F]|\\_)+\\b",
+					"name": "constant.numeric.scl"
 				},
 				{
 					"match": "\\b(2)#[0-1]([0-1]|\\_)+\\b",
-					"name": "constant.numeric.scl"					
+					"name": "constant.numeric.scl"
 				},
 				{
 					"match": "\\b((0(x|X)[0-9a-fA-F]+)|([0-9]+(\\.[0-9]+)?))\\b",
-					"name": "constant.numeric.scl"					
+					"name": "constant.numeric.scl"
 				},
 				{
 					"match": "(?i)\\btrue\\b",
-					"name": "constant.language.boolean.true.scl"					
+					"name": "constant.language.boolean.true.scl"
 				},
 				{
 					"match": "(?i)\\bfalse\\b",
-					"name": "constant.language.boolean.false.scl"					
+					"name": "constant.language.boolean.false.scl"
 				}
 			]
 		},
-        "operators": {
+		"operators": {
 			"patterns": [
 				{
-					"name": "keyword.control.abst",
+					"name": "keyword.operator.abst",
 					"match": "!|\\$|\\&|<\\=|>\\=|<>|<|>|(\\*\\*)|(\\=\\=)|!|\\&\\&|\\*|\\/|\\-|\\+|:|\\=|\\b(void)\\b"
 				},
 				{
@@ -110,9 +297,8 @@
 					"match": "(?i)\\b(and|or|xor|not)\\b"
 				}
 			]
-
 		},
-        "keywords": {
+		"keywords": {
 			"patterns": [
 				{
 					"name": "keyword.control.abst",
@@ -120,7 +306,7 @@
 				},
 				{
 					"name": "keyword.control.abst",
-					"match": "(?i)\\b(var[\\s\\r\\n]+constant|var|var_input|var_output|var_in_out|var_temp|end_var|begin|const|end_const|type|end_type)\\b"			
+					"match": "(?i)\\b(var[\\s\\r\\n]+constant|var|var_input|var_output|var_in_out|var_temp|end_var|begin|const|end_const|type|end_type)\\b"
 				},
 				{
 					"name": "keyword.control.abst",
@@ -128,17 +314,17 @@
 				}
 			]
 		},
-        "strings": {
-            "name": "string.quoted.double.abst",
-            "begin": "\"",
-            "end": "\"",
-            "patterns": [
-                {
-                    "name": "constant.character.escape.abst",
-                    "match": "\\\\."
-                }
-            ]
-        }
-    },
-    "scopeName": "source.abst"
+		"strings": {
+			"name": "string.quoted.double.abst",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "constant.character.escape.abst",
+					"match": "\\\\."
+				}
+			]
+		}
+	},
+	"scopeName": "source.abst"
 }
