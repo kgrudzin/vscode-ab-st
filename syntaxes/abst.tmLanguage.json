@@ -1,0 +1,144 @@
+{
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "name": "AB ST",
+    "patterns": [
+        {
+            "include": "#comments"
+        },
+        {
+            "include": "#section"
+        },
+        {
+            "include": "#strings"
+        },
+        {
+            "include": "#keywords"
+        },
+        {
+            "include": "#operators"
+        },
+        {
+            "include": "#constants"
+        }
+    ],
+    "repository": {
+        "comments":{
+            "patterns": [
+                {
+                    "name": "comment.block.paren.abst",
+                    "begin": "\\(\\*",
+                    "end": "\\*\\)",
+                    "captures": {
+                        "0": { "name": "punctuation.definition.comment.abst" }
+                    }
+                },
+                {
+                    "name": "comment.block.slash.abst",
+                    "begin": "\\/\\*",
+                    "end": "\\*\\/",
+                    "captures": {
+                        "0": { "name": "punctuation.definition.comment.abst" }
+                    }
+                },
+                {
+                    "name": "comment.line.double-slash-abst",
+                    "match": "(//).*$\\n?",
+                    "captures": {
+                        "1": { "name": "punctuation.definition.comment.abst"}
+                    }
+                }
+            ]
+        },
+        "section":{
+			"patterns":[
+				{
+					"captures": {
+						"1": { "name": "keyword.other.region.abst"},
+						"2": { "name": "string.unquoted.abst"}
+					},
+					"match": "(?i)(#region)\\b(.*)$\\n?"
+				},
+				{
+					"captures": {
+						"1": { "name": "keyword.other.endregion.abst"},
+						"2": { "name": "string.unquoted.abst"}
+					},
+					"match": "(?i)(#endregion)\\b(.*)$\\n?"
+				}
+			]
+		},
+        "constants":{
+			"patterns": [
+				{
+					"match": "\\b(T|TIME)#(((([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)|\\d+)?d)?((([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)|\\d+)?h)?((([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)|\\d+)?m)?((([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)|\\d+)?s)?((([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)|\\d+)?ms)?)\\b",	
+					"name": "constant.numeric.scl"					
+				},
+				{
+					"match": "\\b(16)#[0-9A-F]([0-9A-F]|\\_)+\\b",
+					"name": "constant.numeric.scl"					
+				},
+				{
+					"match": "\\b(2)#[0-1]([0-1]|\\_)+\\b",
+					"name": "constant.numeric.scl"					
+				},
+				{
+					"match": "\\b((0(x|X)[0-9a-fA-F]+)|([0-9]+(\\.[0-9]+)?))\\b",
+					"name": "constant.numeric.scl"					
+				},
+				{
+					"match": "(?i)\\btrue\\b",
+					"name": "constant.language.boolean.true.scl"					
+				},
+				{
+					"match": "(?i)\\bfalse\\b",
+					"name": "constant.language.boolean.false.scl"					
+				}
+			]
+		},
+        "operators": {
+			"patterns": [
+				{
+					"name": "keyword.control.abst",
+					"match": "!|\\$|\\&|<\\=|>\\=|<>|<|>|(\\*\\*)|(\\=\\=)|!|\\&\\&|\\*|\\/|\\-|\\+|:|\\=|\\b(void)\\b"
+				},
+				{
+					"name": "keyword.control.assignment.abst",
+					"match": "\\:\\="
+				},
+				{
+					"name": "keyword.control.abst",
+					"match": "(?i)\\b(and|or|xor|not)\\b"
+				}
+			]
+
+		},
+        "keywords": {
+			"patterns": [
+				{
+					"name": "keyword.control.abst",
+					"match": "(?i)\\b(break|case|end_case|continue|do|to|else|elsif|AT|for|end_for|goto|if|end_if|return|of|while|end_while|then|repeat|until|end_repeat|exit|label|end_label|REGION|END_REGION)\\b"
+				},
+				{
+					"name": "keyword.control.abst",
+					"match": "(?i)\\b(var[\\s\\r\\n]+constant|var|var_input|var_output|var_in_out|var_temp|end_var|begin|const|end_const|type|end_type)\\b"			
+				},
+				{
+					"name": "keyword.control.abst",
+					"match": "(?i)\\b(mod|div)\\b"
+				}
+			]
+		},
+        "strings": {
+            "name": "string.quoted.double.abst",
+            "begin": "\"",
+            "end": "\"",
+            "patterns": [
+                {
+                    "name": "constant.character.escape.abst",
+                    "match": "\\\\."
+                }
+            ]
+        }
+    },
+    "scopeName": "source.abst"
+}
