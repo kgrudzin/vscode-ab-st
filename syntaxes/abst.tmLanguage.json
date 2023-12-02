@@ -50,8 +50,8 @@
 			"patterns": [
 				{
 					"name": "entity.name.codeblock.abst",
-					"begin": "(?i)(FUNCTION|FUNCTION_BLOCK|ORGANIZATION_BLOCK)",
-					"end": "(?i)BEGIN",
+					"begin": "(?i)\\b(FUNCTION|FUNCTION_BLOCK|ORGANIZATION_BLOCK)\\b",
+					"end": "(?i)\\bBEGIN\\b",
 					"captures": {
 						"0": {
 							"name": "support.function.abst"
@@ -71,8 +71,29 @@
 				},
 				{
 					"name": "entity.name.typeblock.abst",
-					"begin": "(?i)(TYPE)",
-					"end": "(?i)END_TYPE",
+					"begin": "(?i)\\b(TYPE)\\b",
+					"end": "(?i)\\bEND_TYPE\\b",
+					"captures": {
+						"0": {
+							"name": "support.function.abst"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#declaration_section"
+						},
+						{
+							"include": "#block-attributes"
+						}
+					]
+				},
+				{
+					"name": "entity.name.datablock.abst",
+					"begin": "(?i)\\b(DATA_BLOCK)\\b",
+					"end": "(?i)\\bEND_DATA_BLOCK\\b",
 					"captures": {
 						"0": {
 							"name": "support.function.abst"
@@ -142,7 +163,7 @@
 			"patterns": [
 				{
 					"name": "entity.name.declaration-section.var.abst",
-					"begin": "(?i)\\b(VAR_INPUT|VAR_IN_OUT|VAR_OUTPUT|VAR_TEMP|VAR_GLOBAL|VAR\\s*CONSTANT|VAR)\\b",
+					"begin": "(?i)\\b(VAR_INPUT|VAR_IN_OUT|VAR_OUTPUT|VAR_TEMP|VAR_GLOBAL|VAR\\s*CONSTANT|VAR\\s*RETAIN|VAR)\\b",
 					"end": "(?i)END_VAR",
 					"captures": {
 						"0": {
@@ -208,7 +229,7 @@
 							"name": "keyword.operator"
 						},
 						"5": {
-							"name": "keyword.control",
+							"name": "entity.name.type",
 							"patterns": [
 								{
 									"include": "#strings"
@@ -225,6 +246,35 @@
 							]
 						}
 					}
+				}
+			]
+		},
+		"code":{
+			"name": "entity.name.code.abst",
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#section"
+				},
+				{
+					"include": "#constants"
+				},
+				{
+					"include": "#operators"
+				},
+				{
+					"include": "#keywords"
+				},
+				{
+					"include": "#functions"
+				},
+				{
+					"include": "#tags"
+				},
+				{
+					"include": "#strings"
 				}
 			]
 		},
@@ -286,11 +336,7 @@
 			"patterns": [
 				{
 					"name": "keyword.operator.abst",
-					"match": "!|\\$|\\&|<\\=|>\\=|<>|<|>|(\\*\\*)|(\\=\\=)|!|\\&\\&|\\*|\\/|\\-|\\+|:|\\=|\\b(void)\\b"
-				},
-				{
-					"name": "keyword.control.assignment.abst",
-					"match": "\\:\\="
+					"match": "!|\\$|\\&|<\\=|>\\=|<>|<|>|(\\*\\*)|(\\=\\=)|!|\\&\\&|\\*|\\/|\\-|\\+|:=|:|\\=|\\b(void)\\b"
 				},
 				{
 					"name": "keyword.control.abst",
@@ -311,6 +357,32 @@
 				{
 					"name": "keyword.control.abst",
 					"match": "(?i)\\b(mod|div)\\b"
+				}
+			]
+		},
+		"tags": {
+				"match": "\\b([a-zA-Z0-9_]+)\\b",
+				"name": "variable.name.abst"
+		},
+		"functions": {
+			"begin": "([a-zA-Z_0-9]+)(\\()",
+			"beginCaptures": {
+				"1": {
+					"name": "entity.name.function.abst"
+				},
+				"2": {
+					"name": "punctuation.parenthesis.begin.abst"
+				}
+			},
+			"end": "\\)",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.parenthesis.end.abst"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#code"
 				}
 			]
 		},
